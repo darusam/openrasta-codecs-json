@@ -39,23 +39,40 @@ namespace CDMSmith.OpenRasta.Legacy.Codecs
             {
                 return;
             }
+            /*
+            ICollection<JsonConverter> converters;
+            if(Configuration == null)
+            {
+                converters = new JsonConverter[] { new IsoDateTimeConverter() };
+            }
             else
             {
-                JsonSerializer serializer = new JsonSerializer();
-                serializer.Converters.Add(new JavaScriptDateTimeConverter());
-                serializer.NullValueHandling = NullValueHandling.Ignore;
-
-                using (System.IO.StreamWriter sw = new System.IO.StreamWriter(response.Stream))
+                converters = Configuration as ICollection<JsonConverter>;
+                if(converters == null)
                 {
-                    using (JsonWriter jw = new JsonTextWriter(sw))
-                    {
-                        serializer.Serialize(jw, entity);
-                        jw.Flush();
-                        jw.Close();
-                    }
-
+                    converters = new JsonConverter[] { new IsoDateTimeConverter() };
                 }
             }
+            */
+            JsonSerializer serializer = new JsonSerializer();
+            serializer.Converters.Add(new IsoDateTimeConverter());
+            //foreach(JsonConverter converter in converters)
+            //{
+            //    serializer.Converters.Add(converter);
+            //}
+            serializer.NullValueHandling = NullValueHandling.Ignore;
+
+            using (System.IO.StreamWriter sw = new System.IO.StreamWriter(response.Stream))
+            {
+                using (JsonWriter jw = new JsonTextWriter(sw))
+                {
+                    serializer.Serialize(jw, entity);
+                    jw.Flush();
+                    jw.Close();
+                }
+
+            }
+            
         }
     }
 }
